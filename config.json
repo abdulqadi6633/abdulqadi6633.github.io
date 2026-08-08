@@ -4,11 +4,17 @@
     "url": "https://open.spotify.com/artist/yourid"
   },
   "links": [
-    { "label": "Instagram",   "url": "https://instagram.com/yourhandle" },
-    { "label": "X / Twitter", "url": "https://x.com/yourhandle" },
-    { "label": "TikTok",      "url": "https://tiktok.com/@yourhandle" },
-    { "label": "Spotify",     "url": "https://open.spotify.com/artist/yourid", "extra": "[Loud]" },
-    { "label": "Bandcamp",    "url": "https://yourname.bandcamp.com", "extra": "[Louder]" },
-    { "label": "SoundCloud",  "url": "https://soundcloud.com/yourhandle" }
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/deadbeat0nline/?hl=en"
+    },
+    {
+      "label": "TikTok",
+      "url": "https://www.tiktok.com/@70dayssober"
+    },
+    {
+      "label": "SoundCloud",
+      "url": "https://soundcloud.com/deadbeatonline"
+    }
   ]
 }
