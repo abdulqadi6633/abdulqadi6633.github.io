@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>deadbeat0nline — control panel</title>
+<meta name="robots" content="noindex,nofollow">
+
+<!--
+  ============================================================
+  CONTROL PANEL — updates config.json in your GitHub repo,
+  which is what your public link page reads from.
+  No server needed: it talks straight to the GitHub API using
+  a fine-grained token that only works on this one repo.
+  See README.md for the one-time setup.
+  ============================================================
+-->
+
+<style>
+  :root{
+    --bg:#050505;
+    --panel:#101408;
+    --fg:#c9d1c9;
+    --green:#39ff6a;
+    --green-dim:#1c7a35;
+    --amber:#ffb000;
+    --red:#ff4040;
+    --line:#1f2b1f;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; min-height:100%;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Courier New',Courier,monospace;
+  }
+  .wrap{
+    max-width:560px;
+    margin:0 auto;
+    padding:34px 16px 60px;
+  }
+  h1{
+    color:var(--green);
+    font-size:20px;
+    letter-spacing:2px;
+    margin:0 0 4px;
+  }
+  .sub{
+    font-size:12px;
+    color:var(--green-dim);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:26px;
+  }
+  fieldset{
+    border:1px solid var(--line);
+    background:rgba(16,20,8,0.5);
+    margin:0 0 18px;
+    padding:14px;
+  }
+  legend{
+    color:var(--amber);
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:0 8px;
+  }
+  label{
+    display:block;
+    font-size:11px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--green-dim);
+    margin:10px 0 4px;
+  }
+  input[type=text], input[type=password], input[type=url]{
+    width:100%;
+    background:#000;
+    border:1px solid var(--line);
+    color:var(--fg);
+    font-family:inherit;
+    font-size:14px;
+    padding:9px 10px;
+    outline:none;
+  }
+  input:focus{ border-color:var(--green-dim); }
+  .row{ display:flex; gap:8px; }
+  .row > div{ flex:1; }
+  .row .narrow{ flex:0 0 110px; }
+
+  .linkrow{
+    display:flex;
+    gap:6px;
+    margin-bottom:8px;
+    align-items:center;
+  }
+  .linkrow input{ font-size:13px; padding:8px; }
+  .linkrow .lbl{ flex:0 0 30%; }
+  .linkrow .url{ flex:1; }
+  .linkrow .extra{ flex:0 0 17%; }
+  .linkrow button{
+    flex:0 0 34px;
+    background:#000;
+    border:1px solid var(--line);
+    color:var(--red);
+    font-family:inherit;
+    font-size:15px;
+    padding:7px 0;
+    cursor:pointer;
+  }
+  .linkrow button:hover{ border-color:var(--red); }
+
+  button.big{
+    width:100%;
+    background:var(--green-dim);
+    border:1px solid var(--green);
+    color:#000;
+    font-family:inherit;
+    font-weight:bold;
+    font-size:15px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:13px;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  button.big:hover{ background:var(--green); }
+  button.ghost{
+    width:100%;
+    background:transparent;
+    border:1px dashed var(--line);
+    color:var(--green-dim);
+    font-family:inherit;
+    font-size:13px;
+    padding:9px;
+    cursor:pointer;
+    margin-top:4px;
+  }
+  button.ghost:hover{ color:var(--green); border-color:var(--green-dim); }
+
+  #status{
+    margin-top:14px;
+    padding:11px 12px;
+    font-size:13px;
+    letter-spacing:1px;
+    border:1px solid var(--line);
+    min-height:20px;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  #status.ok{ color:var(--green); border-color:var(--green-dim); }
+  #status.err{ color:var(--red); border-color:var(--red); }
+  #status.busy{ color:var(--amber); border-color:var(--amber); }
+
+  .hint{
+    font-size:11px;
+    color:rgba(201,209,201,0.45);
+    line-height:1.6;
+    margin-top:6px;
+  }
+  .hint a{ color:var(--green-dim); }
+  .remember{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+    font-size:12px;
+    color:var(--green-dim);
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>&#9760; deadbeat0nline control panel</h1>
+  <div class="sub">:: updates the live link page ::</div>
+
+  <fieldset>
+    <legend>repo connection</legend>
+    <div class="row">
+      <div>
+        <label>github username</label>
+        <input type="text" id="gh-user" placeholder="yourusername">
+      </div>
+      <div>
+        <label>repo name</label>
+        <input type="text" id="gh-repo" placeholder="yourusername.github.io">
+      </div>
+      <div class="narrow">
+        <label>branch</label>
+        <input type="text" id="gh-branch" value="main">
+      </div>
+    </div>
+    <label>access token</label>
+    <input type="password" id="gh-token" placeholder="github_pat_...">
+    <div class="remember">
+      <input type="checkbox" id="remember">
+      <span>remember these on this device</span>
+    </div>
+    <div class="hint">
+      Use a <b>fine-grained token</b> scoped to ONLY this repo with
+      Contents: Read &amp; write. Nothing is sent anywhere except
+      directly to api.github.com. Setup steps are in README.md.
+    </div>
+    <button class="ghost" id="load">&#8635; LOAD CURRENT CONFIG</button>
+  </fieldset>
+
+  <fieldset>
+    <legend>now playing</legend>
+    <label>song title</label>
+    <input type="text" id="np-title" placeholder="my newest track">
+    <label>song link (spotify / bandcamp / wherever)</label>
+    <input type="url" id="np-url" placeholder="https://...">
+    <div class="hint">Leave the title empty to hide the NOW PLAYING line entirely.</div>
+  </fieldset>
+
+  <fieldset>
+    <legend>links / socials</legend>
+    <div id="linkrows"></div>
+    <button class="ghost" id="add">+ ADD LINK</button>
+    <div class="hint">"extra" is optional flavor text — on the BIOS page it replaces [Enabled]; on the arcade page it's used as the score (numbers only). Leave blank for defaults.</div>
+  </fieldset>
+
+  <button class="big" id="save">&#9654; PUBLISH TO LIVE PAGE</button>
+  <div id="status">standing by_</div>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const FILE = 'config.json';
+  let currentSha = null;
+
+  // ---------- storage (best-effort; fine if unavailable) ----------
+  function store(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+  function unstore(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function clearstore(){ try{ ['db_user','db_repo','db_branch','db_token'].forEach(k => localStorage.removeItem(k)); }catch(e){} }
+
+  // ---------- link rows ----------
+  function addRow(l){
+    l = l || { label:'', url:'', extra:'' };
+    const row = document.createElement('div');
+    row.className = 'linkrow';
+    row.innerHTML = `
+      <input class="lbl" type="text" placeholder="label" value="${esc(l.label)}">
+      <input class="url" type="text" placeholder="https://..." value="${esc(l.url)}">
+      <input class="extra" type="text" placeholder="extra" value="${esc(l.extra || '')}">
+      <button title="remove">&times;</button>`;
+    row.querySelector('button').onclick = () => row.remove();
+    $('linkrows').appendChild(row);
+  }
+  function esc(s){ return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+  function readRows(){
+    return [...document.querySelectorAll('.linkrow')].map(r => {
+      const [lbl, url, extra] = r.querySelectorAll('input');
+      return { label: lbl.value.trim(), url: url.value.trim(), extra: extra.value.trim() || undefined };
+    }).filter(l => l.label && l.url);
+  }
+
+  // ---------- status ----------
+  function status(msg, cls){
+    const el = $('status');
+    el.textContent = msg;
+    el.className = cls || '';
+  }
+
+  // ---------- github api ----------
+  function apiUrl(){
+    return `https://api.github.com/repos/${$('gh-user').value.trim()}/${$('gh-repo').value.trim()}/contents/${FILE}`;
+  }
+  function headers(){
+    return {
+      'Authorization': 'Bearer ' + $('gh-token').value.trim(),
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+  }
+  function b64encode(str){
+    return btoa(String.fromCharCode(...new TextEncoder().encode(str)));
+  }
+  function b64decode(b64){
+    return new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\n/g,'')), c => c.charCodeAt(0)));
+  }
+
+  async function loadConfig(){
+    if(!validConn()) return;
+    status('loading config from repo...', 'busy');
+    try{
+      const r = await fetch(apiUrl() + '?ref=' + encodeURIComponent($('gh-branch').value.trim()), { headers: headers() });
+      if(!r.ok) throw new Error(await explain(r));
+      const data = await r.json();
+      currentSha = data.sha;
+      const cfg = JSON.parse(b64decode(data.content));
+      $('np-title').value = (cfg.nowPlaying && cfg.nowPlaying.title) || '';
+      $('np-url').value = (cfg.nowPlaying && cfg.nowPlaying.url) || '';
+      $('linkrows').innerHTML = '';
+      (cfg.links || []).forEach(addRow);
+      if(!(cfg.links || []).length) addRow();
+      status('config loaded — ' + (cfg.links || []).length + ' links. edit away.', 'ok');
+      maybeRemember();
+    }catch(e){
+      status('LOAD FAILED: ' + e.message, 'err');
+    }
+  }
+
+  async function saveConfig(){
+    if(!validConn()) return;
+    const links = readRows();
+    if(!links.length){ status('SAVE BLOCKED: add at least one link.', 'err'); return; }
+    const cfg = {
+      nowPlaying: { title: $('np-title').value.trim(), url: $('np-url').value.trim() },
+      links
+    };
+    status('publishing...', 'busy');
+    try{
+      // refresh sha in case the file changed since load
+      const head = await fetch(apiUrl() + '?ref=' + encodeURIComponent($('gh-branch').value.trim()), { headers: headers() });
+      if(head.ok) currentSha = (await head.json()).sha;
+
+      const body = {
+        message: 'update links/now-playing via control panel',
+        content: b64encode(JSON.stringify(cfg, null, 2)),
+        branch: $('gh-branch').value.trim()
+      };
+      if(currentSha) body.sha = currentSha;
+
+      const r = await fetch(apiUrl(), { method:'PUT', headers: headers(), body: JSON.stringify(body) });
+      if(!r.ok) throw new Error(await explain(r));
+      const data = await r.json();
+      currentSha = data.content.sha;
+      status('PUBLISHED. the live page updates within a minute or two (GitHub Pages cache).', 'ok');
+      maybeRemember();
+    }catch(e){
+      status('PUBLISH FAILED: ' + e.message, 'err');
+    }
+  }
+
+  async function explain(r){
+    let msg = r.status + ' ' + r.statusText;
+    try{ msg += ' — ' + (await r.json()).message; }catch(e){}
+    if(r.status === 401) msg += ' (token wrong or expired?)';
+    if(r.status === 403) msg += ' (token missing Contents read/write on this repo?)';
+    if(r.status === 404) msg += ' (check username/repo/branch — or token has no access to the repo)';
+    return msg;
+  }
+
+  function validConn(){
+    if(!$('gh-user').value.trim() || !$('gh-repo').value.trim() || !$('gh-token').value.trim()){
+      status('fill in username, repo, and token first.', 'err');
+      return false;
+    }
+    return true;
+  }
+
+  function maybeRemember(){
+    if($('remember').checked){
+      store('db_user', $('gh-user').value.trim());
+      store('db_repo', $('gh-repo').value.trim());
+      store('db_branch', $('gh-branch').value.trim());
+      store('db_token', $('gh-token').value.trim());
+    } else {
+      clearstore();
+    }
+  }
+
+  // ---------- init ----------
+  ['db_user','db_repo','db_branch','db_token'].forEach((k, i) => {
+    const v = unstore(k);
+    if(v){
+      [$('gh-user'), $('gh-repo'), $('gh-branch'), $('gh-token')][i].value = v;
+      $('remember').checked = true;
+    }
+  });
+  addRow({ label:'Instagram', url:'' });
+  $('add').onclick = () => addRow();
+  $('load').onclick = loadConfig;
+  $('save').onclick = saveConfig;
+</script>
+
+</body>
+</html>
