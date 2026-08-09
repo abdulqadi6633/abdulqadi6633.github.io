@@ -94,43 +94,6 @@
     50%{ text-shadow:2px 2px 0 #4a0000,4px 4px 0 #2a0000,6px 6px 0 #150000,0 0 18px rgba(255,20,20,0.45),0 0 40px rgba(255,0,0,0.2); }
   }
 
-  /* huge faint GAME OVER burned into the screen behind everything */
-  .gameover-bg{
-    position:fixed;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:3vh;
-    pointer-events:none;
-    z-index:0;
-    font-family:'Nosifer',cursive;
-    color:rgba(160,0,0,0.30);
-    font-size:clamp(58px,15vw,140px);
-    line-height:1;
-    transform:rotate(-6deg) scale(1.18);
-    white-space:nowrap;
-    animation:goflicker 3.2s steps(1) infinite;
-    user-select:none;
-    text-shadow:0 0 30px rgba(255,0,0,0.25);
-  }
-  .gameover-bg span:nth-child(even){ transform:translateX(6vw) rotate(1.5deg); }
-  .gameover-bg span:nth-child(odd){ transform:translateX(-4vw) rotate(-1deg); }
-  @keyframes goflicker{
-    0%{ opacity:1; }
-    31%{ opacity:1; }
-    32%{ opacity:.35; }
-    34%{ opacity:1; }
-    46%{ opacity:1; }
-    48%{ opacity:.5; }
-    50%{ opacity:1; }
-    71%{ opacity:1; }
-    72%{ opacity:.3; }
-    73%{ opacity:.9; }
-    74%{ opacity:.4; }
-    75%{ opacity:1; }
-  }
 
   /* blood dripping from the top of the screen */
   .drips{
@@ -289,7 +252,6 @@
 
   /* --- power-on: hide the game until the machine boots --- */
   body:not(.on) .screen,
-  body:not(.on) .gameover-bg,
   body:not(.on) .drips{ opacity:0; }
   .boot{
     position:fixed; inset:0;
@@ -451,13 +413,6 @@
     <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
   </filter>
 </svg>
-
-<div class="gameover-bg" aria-hidden="true">
-  <span>GAME OVER</span>
-  <span>GAME OVER</span>
-  <span>GAME OVER</span>
-  <span>GAME OVER</span>
-</div>
 
 <div class="drips" aria-hidden="true">
   <span style="--x:4%;  --w:7px;  --h:90px; --d:0s"></span>
