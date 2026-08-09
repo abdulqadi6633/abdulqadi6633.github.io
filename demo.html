@@ -466,12 +466,28 @@
   .deadpx span:nth-child(4){ top:87%; left:23%; background:#0ff; animation:blink 5s steps(1) infinite; }
 
   /* --- K.O. — the countdown hits zero and the machine takes the hit --- */
+  body.ko{ animation:kofry .16s steps(1) infinite; }
+  @keyframes kofry{
+    0%{ filter:none; }
+    25%{ filter:invert(1) hue-rotate(90deg); }
+    45%{ filter:contrast(2) saturate(3) hue-rotate(-60deg); }
+    65%{ filter:invert(.85) hue-rotate(180deg); }
+    85%{ filter:contrast(1.5) brightness(1.4); }
+    100%{ filter:none; }
+  }
   body.ko .screen{ animation:koshake .12s steps(2) infinite; }
   @keyframes koshake{
     0%{ transform:translate(0,0); }
-    25%{ transform:translate(-6px,3px) skewX(-1deg); }
-    50%{ transform:translate(5px,-4px); }
-    75%{ transform:translate(-3px,-2px) skewX(1deg); }
+    25%{ transform:translate(-8px,4px) skewX(-2deg); }
+    50%{ transform:translate(7px,-5px); }
+    75%{ transform:translate(-4px,-3px) skewX(2deg); }
+  }
+  /* glitch bands go full-bore during the hit */
+  body.ko .glitchbands{ animation:bandsko .1s steps(1) infinite; }
+  @keyframes bandsko{
+    0%{ opacity:1; transform:translate(-12px,4px); }
+    50%{ opacity:.4; transform:translate(10px,-6px); }
+    100%{ opacity:1; transform:translate(-6px,2px); }
   }
   .koflash{
     position:fixed; inset:0;
@@ -479,15 +495,21 @@
     align-items:center;
     justify-content:center;
     z-index:40;
-    background:rgba(90,0,0,0.55);
+    background:rgba(90,0,0,0.45);
     font-family:'Nosifer',cursive;
     font-size:clamp(70px,22vw,180px);
     color:#e01212;
     text-shadow:4px 4px 0 #2a0000, 0 0 60px rgba(255,0,0,0.8);
     pointer-events:none;
-    transform:rotate(-5deg);
   }
-  body.ko .koflash{ display:flex; }
+  body.ko .koflash{ display:flex; animation:kostrobe .14s steps(1) infinite; }
+  @keyframes kostrobe{
+    0%{ background:rgba(90,0,0,0.5); transform:rotate(-5deg) translate(0,0); }
+    30%{ background:rgba(0,0,0,0.75); transform:rotate(-4deg) translate(-14px,6px) scale(1.04); }
+    60%{ background:rgba(120,0,0,0.35); transform:rotate(-6deg) translate(10px,-8px); }
+    80%{ background:rgba(30,0,0,0.7); transform:rotate(-5deg) translate(-6px,3px) scale(0.98); }
+    100%{ background:rgba(90,0,0,0.5); transform:rotate(-5deg) translate(0,0); }
+  }
 </style>
 </head>
 <body>
