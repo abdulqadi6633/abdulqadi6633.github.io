@@ -91,6 +91,44 @@
   }
 
 
+
+  /* huge GAME OVER wall burned into the screen behind everything */
+  .gameover-bg{
+    position:fixed;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3vh;
+    pointer-events:none;
+    z-index:0;
+    font-family:'Nosifer',cursive;
+    color:rgba(160,0,0,0.30);
+    font-size:clamp(58px,15vw,140px);
+    line-height:1;
+    white-space:nowrap;
+    animation:goflicker 3.4s steps(1) infinite;
+    user-select:none;
+    text-shadow:0 0 30px rgba(255,0,0,0.25);
+    will-change:transform,opacity;
+  }
+  .gameover-bg span:nth-child(even){ transform:translateX(6vw) rotate(1.5deg); }
+  .gameover-bg span:nth-child(odd){ transform:translateX(-4vw) rotate(-1deg); }
+  @keyframes goflicker{
+    0%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
+    30%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
+    31%{ opacity:.4; transform:rotate(-6deg) scale(1.18) translateX(-14px); }
+    33%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
+    54%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
+    55%{ opacity:.6; transform:rotate(-6deg) scale(1.18) translateX(10px) skewX(2deg); }
+    56%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
+    78%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
+    79%{ opacity:.3; transform:rotate(-6deg) scale(1.18) translateX(-8px); }
+    80%{ opacity:.9; transform:rotate(-6deg) scale(1.18) translateX(12px); }
+    81%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
+  }
+
   /* blood dripping from the top of the screen */
   .drips{
     position:fixed;
@@ -248,6 +286,7 @@
 
   /* --- power-on: hide the game until the machine boots --- */
   body:not(.on) .screen,
+  body:not(.on) .gameover-bg,
   body:not(.on) .drips{ opacity:0; }
   .boot{
     position:fixed; inset:0;
@@ -294,8 +333,30 @@
     z-index:-1;
     line-height:inherit;
   }
-  .name::before{ color:rgba(255,0,60,0.55); transform:translate(-3px,0); }
-  .name::after{ color:rgba(0,229,255,0.4); transform:translate(3px,1px); }
+  .name::before{
+    color:rgba(255,0,60,0.55);
+    transform:translate(-3px,0);
+    animation:sliceA 3.1s steps(1) infinite;
+    will-change:clip-path,transform;
+  }
+  .name::after{
+    color:rgba(0,229,255,0.4);
+    transform:translate(3px,1px);
+    animation:sliceB 2.7s steps(1) infinite;
+    will-change:clip-path,transform;
+  }
+  @keyframes sliceA{
+    0%,100%{ clip-path:none; transform:translate(-3px,0); }
+    88%{ clip-path:inset(15% 0 60% 0); transform:translate(-12px,2px); }
+    91%{ clip-path:inset(65% 0 10% 0); transform:translate(9px,-2px); }
+    94%{ clip-path:none; transform:translate(-3px,0); }
+  }
+  @keyframes sliceB{
+    0%,100%{ clip-path:none; transform:translate(3px,1px); }
+    84%{ clip-path:inset(40% 0 35% 0); transform:translate(11px,-1px); }
+    87%{ clip-path:inset(5% 0 75% 0); transform:translate(-8px,3px); }
+    90%{ clip-path:none; transform:translate(3px,1px); }
+  }
   .links a span, .table-head span, a.nowplaying, .press-start{
     text-shadow:1px 0 rgba(255,0,0,0.35), -1px 0 rgba(0,229,255,0.25);
   }
@@ -365,6 +426,33 @@
     100%{ transform:translateY(105vh); }
   }
 
+  /* --- RGB glitch bands: whole screen tears for a frame every few seconds --- */
+  .glitchbands{
+    position:fixed;
+    inset:-20px 0;
+    background:repeating-linear-gradient(0deg,
+      transparent 0 44px,
+      rgba(255,0,60,0.10) 44px 47px,
+      transparent 47px 88px,
+      rgba(0,229,255,0.08) 88px 90px,
+      transparent 90px 140px);
+    opacity:0;
+    z-index:12;
+    pointer-events:none;
+    animation:bands 5.3s steps(1) infinite;
+    will-change:opacity,transform;
+  }
+  @keyframes bands{
+    0%{ opacity:0; transform:translate(0,0); }
+    57%{ opacity:0; }
+    58%{ opacity:1; transform:translate(-9px,3px); }
+    60%{ opacity:0; transform:translate(0,0); }
+    86%{ opacity:0; }
+    87%{ opacity:1; transform:translate(7px,-4px); }
+    88%{ opacity:.5; transform:translate(-5px,0); }
+    89%{ opacity:0; transform:translate(0,0); }
+  }
+
   /* --- dead / stuck pixels --- */
   .deadpx span{
     position:fixed;
@@ -424,6 +512,13 @@
   <span style="--x:92%; --w:8px;  --h:105px; --d:-1.5s"></span>
 </div>
 
+<div class="gameover-bg" aria-hidden="true">
+  <span>GAME OVER</span>
+  <span>GAME OVER</span>
+  <span>GAME OVER</span>
+  <span>GAME OVER</span>
+</div>
+
 <div class="boot" aria-hidden="true">
   <div class="coin">INSERT COIN</div>
   <div class="credit">CREDIT 0 &nbsp; FREE PLAY DISABLED</div>
@@ -431,6 +526,7 @@
 
 <div class="bloodpool" aria-hidden="true"></div>
 <div class="track" aria-hidden="true"></div>
+<div class="glitchbands" aria-hidden="true"></div>
 <div class="deadpx" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 <div class="koflash" aria-hidden="true">K.O.</div>
 
