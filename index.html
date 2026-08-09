@@ -92,42 +92,6 @@
 
 
 
-  /* huge GAME OVER wall burned into the screen behind everything */
-  .gameover-bg{
-    position:fixed;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:3vh;
-    pointer-events:none;
-    z-index:0;
-    font-family:'Nosifer',cursive;
-    color:rgba(160,0,0,0.30);
-    font-size:clamp(58px,15vw,140px);
-    line-height:1;
-    white-space:nowrap;
-    animation:goflicker 3.4s steps(1) infinite;
-    user-select:none;
-    text-shadow:0 0 30px rgba(255,0,0,0.25);
-    will-change:transform,opacity;
-  }
-  .gameover-bg span:nth-child(even){ transform:translateX(6vw) rotate(1.5deg); }
-  .gameover-bg span:nth-child(odd){ transform:translateX(-4vw) rotate(-1deg); }
-  @keyframes goflicker{
-    0%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
-    30%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
-    31%{ opacity:.4; transform:rotate(-6deg) scale(1.18) translateX(-14px); }
-    33%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
-    54%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
-    55%{ opacity:.6; transform:rotate(-6deg) scale(1.18) translateX(10px) skewX(2deg); }
-    56%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
-    78%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
-    79%{ opacity:.3; transform:rotate(-6deg) scale(1.18) translateX(-8px); }
-    80%{ opacity:.9; transform:rotate(-6deg) scale(1.18) translateX(12px); }
-    81%{ opacity:1; transform:rotate(-6deg) scale(1.18); }
-  }
 
   /* blood dripping from the top of the screen */
   .drips{
@@ -286,7 +250,6 @@
 
   /* --- power-on: hide the game until the machine boots --- */
   body:not(.on) .screen,
-  body:not(.on) .gameover-bg,
   body:not(.on) .drips{ opacity:0; }
   .boot{
     position:fixed; inset:0;
@@ -532,13 +495,6 @@
   <span style="--x:72%; --w:7px;  --h:95px; --d:-2.5s"></span>
   <span style="--x:83%; --w:5px;  --h:85px;  --d:-4.5s"></span>
   <span style="--x:92%; --w:8px;  --h:105px; --d:-1.5s"></span>
-</div>
-
-<div class="gameover-bg" aria-hidden="true">
-  <span>GAME OVER</span>
-  <span>GAME OVER</span>
-  <span>GAME OVER</span>
-  <span>GAME OVER</span>
 </div>
 
 <div class="boot" aria-hidden="true">
